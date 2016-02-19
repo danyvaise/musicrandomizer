@@ -87,10 +87,13 @@ public class MusicRandomizer implements Runnable
                     
                     String filename = "";
                     
-                    if (folderMod == 1)
+                    int musicIndex = 0;
+                    
+                    //Saisie utilisateur du répertoire de destination
+                    ui.enterTargetFolderPath();
+                    
+                    if (!ui.getTargetFolderPath().equals(""))
                         {
-                        //Saisie utilisateur du répertoire de destination
-                        ui.enterTargetFolderPath();
                         targetFolder = ui.getTargetFolderPath();
                         }
                     
@@ -185,44 +188,41 @@ public class MusicRandomizer implements Runnable
                             }
                         }
                     
-                    for (int i=0; i<randomizeList.length; i++)
-                        {
-                        System.out.println(randomizeList[i]);
-                        }
-                    
                     /***
                      Partie copie des fichiers vers le targetFolder
                     */
                     for (int i=1; i<nbFolders+1; i++)
                         {
-                        int musicIndex = 0;
+                        String currentTargetFolder = targetFolder;
                         
                         if (folderMod == 0)
                             {
                             //Création du répertoire CD(index) => CD1
-                            targetFolder += "CD" + i + '/';
+                            currentTargetFolder = targetFolder + "CD" + i + '/';
                             }
                         
                         //Création du répertoire de destination
-                        fm.createFolder(targetFolder);
+                        fm.createFolder(currentTargetFolder);
+                        System.out.println(currentTargetFolder);
                         
                         for (int j=1; j<nbFilePerFolder+1; j++)
                             {
-                            if (folderMod == 0)
+                            if (musicIndex < nbFiles)
                                 {
                                 //Déplace un fichier aléatoire dans le répertoire
                                 //de l'index courant
-                                fm.copyFile(folder_path + '/' + randomizeList[musicIndex], targetFolder + j + " - " + randomizeList[musicIndex]);
-                                musicIndex ++;
+                                fm.copyFile(folder_path + '/' + randomizeList[musicIndex], currentTargetFolder + j + " - " + randomizeList[musicIndex]);
                                 }
                             else
                                 {
-                                if (folderMod == 1)
-                                    {
-                                    fm.copyFile(folder_path + '/' + randomizeList[musicIndex], targetFolder + j + " - " + randomizeList[musicIndex]);
-                                    musicIndex ++;
-                                    }
+                                break;
                                 }
+                            musicIndex ++;
+                            }
+                        
+                        if (musicIndex == nbFiles)
+                            {
+                            break;
                             }
                         }
                     }
