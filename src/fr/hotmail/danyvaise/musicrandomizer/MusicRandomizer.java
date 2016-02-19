@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 /*
  * Classe principale dans laquelle on manipule les objets.
- * C'est le coeur du programme. toto
+ * C'est le coeur du programme.
  */
 
 public class MusicRandomizer implements Runnable
