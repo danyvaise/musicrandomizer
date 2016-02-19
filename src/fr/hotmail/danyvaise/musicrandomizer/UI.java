@@ -12,7 +12,7 @@ public class UI
     String path;
     String targetFolderPath;
     int nbFiles;
-    int folderMod;
+    int nbFolders;
     
     public UI()
         {
@@ -20,16 +20,16 @@ public class UI
         path = "";
         targetFolderPath = "";
         nbFiles = 0;
-        folderMod = 0;
+        nbFolders = 0;
         }
     
-    public UI(String str_path, String str_targetFolderPath, int i_nbFiles, int i_folderMod)
+    public UI(String str_path, String str_targetFolderPath, int i_nbFiles, int i_nbFolders)
         {
         sc_input = new Scanner(System.in);
         path = str_path;
         targetFolderPath = str_targetFolderPath;
         nbFiles = i_nbFiles;
-        folderMod = i_folderMod;
+        nbFolders = i_nbFolders;
         }
     
     public void displayHeader()
@@ -54,12 +54,18 @@ public class UI
         nbFiles = Integer.parseInt(s);
         }
     
-    public void enterFolderMod()
+    public void enterNbFolders()
         {
         String s = "";
-        System.out.println("Folder mode :\n    [1] -> 1 folder\n    [0] -> several folders");
+        System.out.println("Please enter a number of folder.\n0 or nothing for unlimited folders :");
         s = sc_input.nextLine();
-        folderMod = Integer.parseInt(s);
+        
+        if (s.equals(""))
+            {
+            s = "0";
+            }
+        
+        nbFolders = Integer.parseInt(s);
         }
     
     public void enterTargetFolderPath()
@@ -98,11 +104,6 @@ public class UI
         
         if (i == 2)
             {
-            System.err.println("\nNot enough folders to create please up the number of files !");
-            }
-        
-        if (i == 3)
-            {
             System.err.println("\nThe directory is incorrect !");
             }
         }
@@ -137,13 +138,13 @@ public class UI
         nbFiles = i_nbFiles;
         }
     
-    public int getFolderMod()
+    public int getNbFolders()
         {
-        return folderMod;
+        return nbFolders;
         }
     
-    public void setFolderMod(int i_folderMod)
+    public void setNbFolder(int i_nbFolders)
         {
-        folderMod = i_folderMod;
+        nbFolders = i_nbFolders;
         }
     }

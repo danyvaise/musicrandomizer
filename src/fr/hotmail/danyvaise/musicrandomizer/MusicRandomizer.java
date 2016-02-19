@@ -39,8 +39,8 @@ public class MusicRandomizer implements Runnable
         
         //Saisie utilisateur du nombre
         //de fichiers par répertoire
-        ui.enterFolderMod();
-        folderMod = ui.getFolderMod();
+        ui.enterNbFolders();
+        nbFolders = ui.getNbFolders();
         
         
         //Création de l'objet de gestion fichier/dossier
@@ -53,7 +53,7 @@ public class MusicRandomizer implements Runnable
         //Récupère le nombre de fichiers à traiter
         nbFiles = files.length;
 
-        if (folderMod == 0)
+        if (nbFolders == 0)
             {
             //Calcul du nombre de répertoires à créer
             nbFolders = nbFiles/nbFilePerFolder;
@@ -68,169 +68,169 @@ public class MusicRandomizer implements Runnable
                 nbFolders += 1;
                 }
             }
+        else
+            {
+            folderMod = 1;
+            }
        
         if (fm.getDirectory().isDirectory())
             {
-            if (nbFiles == 0 && folderMod == 0)
+            if (nbFiles == 0)
                 {
                 ui.displayError(1);
                 }
             else
                 {
-                if (nbFolders <= 1 && folderMod == 0)
+                String targetFolder = folder_path + "/VA-Randomized";
+
+                String filename = "";
+
+                int musicIndex = 0;
+
+                //Saisie utilisateur du répertoire de destination
+                ui.enterTargetFolderPath();
+
+                if (!ui.getTargetFolderPath().equals(""))
                     {
-                    ui.displayError(2);
+                    targetFolder = ui.getTargetFolderPath();
                     }
-                else
+
+                targetFolder += '/';
+
+                //Purge des fichier non musicaux
+                //Déplacement dans le dossier corbeille
+                for (int i=0; i<nbFiles; i++)
                     {
-                    String targetFolder = folder_path + "/VA-Randomized";
-                    
-                    String filename = "";
-                    
-                    int musicIndex = 0;
-                    
-                    //Saisie utilisateur du répertoire de destination
-                    ui.enterTargetFolderPath();
-                    
-                    if (!ui.getTargetFolderPath().equals(""))
-                        {
-                        targetFolder = ui.getTargetFolderPath();
-                        }
-                    
-                    targetFolder += '/';
-                   
-                    //Purge des fichier non musicaux
-                    //Déplacement dans le dossier corbeille
-                    for (int i=0; i<nbFiles; i++)
-                        {
-                        filename = files[i].getName().toLowerCase();
-                        
-                        Pattern pattern = Pattern.compile(".mp3|.flac|.wave|.wma|.m4a");
-                        
-                        //Vérification que le fichier est une extension musicale
-                        Boolean extensionCheck = pattern.matcher(filename).find();
+                    filename = files[i].getName().toLowerCase();
 
-                        //Si le fichier n'a pas d'extension aurorisée
-                        //on le déplace dans le dossier corbeille
-                        if (extensionCheck == false)
-                            {
-                            String trashFolder = folder_path + "/_TRASH_/";
-                            //Création du répertoire corbeille
-                            fm.createFolder(trashFolder);
-                            fm.moveFile(folder_path + '/' + filename, trashFolder + filename);
-                            }
-                        
-                        if (i == nbFiles-1)
-                            {
-                            files = fm.listFiles(folder_path);
-                            nbFiles = files.length;
-                            }
-                        }
-                    
-                    //Création de la liste des fichiers random
-                    String randomizeList[] = new String[nbFiles];
-                    
-                    //Création de la liste d'exclusion
-                    String blackList[] = new String[nbFiles];
-                    
-                    /***
-                     Partie calcul du randomize
-                     Peuplement de la liste des fichiers à randomizer
-                     Chaque nouveau fichier randomizé ne doit pas
-                     figurer dans la black liste
-                    */
-                    for (int i=0; i<nbFiles; i++)
+                    Pattern pattern = Pattern.compile(".mp3|.flac|.wave|.wma|.m4a");
+
+                    //Vérification que le fichier est une extension musicale
+                    Boolean extensionCheck = pattern.matcher(filename).find();
+
+                    //Si le fichier n'a pas d'extension aurorisée
+                    //on le déplace dans le dossier corbeille
+                    if (extensionCheck == false)
                         {
-                        int randomIndex = 0;
-                        
-                        if (i==0)
+                        String trashFolder = folder_path + "/_TRASH_/";
+                        //Création du répertoire corbeille
+                        fm.createFolder(trashFolder);
+                        fm.moveFile(folder_path + '/' + filename, trashFolder + filename);
+                        }
+
+                    if (i == nbFiles-1)
+                        {
+                        files = fm.listFiles(folder_path);
+                        nbFiles = files.length;
+                        }
+                    }
+
+                //Création de la liste des fichiers random
+                String randomizeList[] = new String[nbFiles];
+
+                //Création de la liste d'exclusion
+                String blackList[] = new String[nbFiles];
+
+                /***
+                 Partie calcul du randomize
+                 Peuplement de la liste des fichiers à randomizer
+                 Chaque nouveau fichier randomizé ne doit pas
+                 figurer dans la black liste
+                */
+                for (int i=0; i<nbFiles; i++)
+                    {
+                    int randomIndex = 0;
+
+                    if (i==0)
+                        {
+                        //Retourne sur le total des fichiers un numéro de fichier aléatoire
+                        randomIndex = rand.nextInt(nbFiles);
+
+                        //Retourne le nom du fichier à la position de l'index
+                        filename = files[randomIndex].getName();
+
+                        //Peuplement du tableau avec le nom du fichier à randomizer
+                        randomizeList[i] = filename;
+
+                        //Ajout du fichier dans la black liste
+                        blackList[i] = filename;
+                        }
+                    else
+                        {
+                        //Parcours de la liste d'exclusion
+                        //On randomize le fichier si ce dernier n'est pas matché
+                        //Une fois randomizé le fichier est ajouté à la black liste
+                        Boolean inBlackList = false;
+
+                        randomIndex = rand.nextInt(nbFiles);
+                        filename = files[randomIndex].getName();
+
+                        inBlackList = checkStringInTab(filename, blackList);
+
+                        if (inBlackList)
                             {
-                            //Retourne sur le total des fichiers un numéro de fichier aléatoire
-                            randomIndex = rand.nextInt(nbFiles);
-                            
-                            //Retourne le nom du fichier à la position de l'index
-                            filename = files[randomIndex].getName();
-                           
-                            //Peuplement du tableau avec le nom du fichier à randomizer
+                            while (inBlackList)
+                                {
+                                randomIndex = rand.nextInt(nbFiles);
+                                filename = files[randomIndex].getName();
+                                inBlackList = checkStringInTab(filename, blackList);
+                                }
                             randomizeList[i] = filename;
-
-                            //Ajout du fichier dans la black liste
                             blackList[i] = filename;
                             }
                         else
                             {
-                            //Parcours de la liste d'exclusion
-                            //On randomize le fichier si ce dernier n'est pas matché
-                            //Une fois randomizé le fichier est ajouté à la black liste
-                            Boolean inBlackList = false;
-                            
-                            randomIndex = rand.nextInt(nbFiles);
-                            filename = files[randomIndex].getName();
-                            
-                            inBlackList = checkStringInTab(filename, blackList);
-
-                            if (inBlackList)
-                                {
-                                while (inBlackList)
-                                    {
-                                    randomIndex = rand.nextInt(nbFiles);
-                                    filename = files[randomIndex].getName();
-                                    inBlackList = checkStringInTab(filename, blackList);
-                                    }
-                                randomizeList[i] = filename;
-                                blackList[i] = filename;
-                                }
-                            else
-                                {
-                                randomizeList[i] = filename;
-                                blackList[i] = filename;
-                                }
+                            randomizeList[i] = filename;
+                            blackList[i] = filename;
                             }
                         }
+                    }
                     
-                    /***
-                     Partie copie des fichiers vers le targetFolder
-                    */
-                    for (int i=1; i<nbFolders+1; i++)
+                
+                /***
+                 Partie copie des fichiers vers le targetFolder
+                */
+                for (int i=1; i<nbFolders+1; i++)
+                    {
+                    String currentTargetFolder = targetFolder;
+
+                    if (nbFolders > 1)
                         {
-                        String currentTargetFolder = targetFolder;
-                        
-                        if (folderMod == 0)
+                        //Création du répertoire CD(index) => CD1
+                        currentTargetFolder = targetFolder + "CD" + i + '/';
+                        }
+
+                    //Création du répertoire de destination
+                    fm.createFolder(currentTargetFolder);
+
+                    //Affichage du répertoire en cours de traitement
+                    System.out.println(currentTargetFolder);
+
+                    for (int j=1; j<nbFilePerFolder+1; j++)
+                        {
+                        if (musicIndex < nbFiles)
                             {
-                            //Création du répertoire CD(index) => CD1
-                            currentTargetFolder = targetFolder + "CD" + i + '/';
+                            //Déplace un fichier aléatoire dans le répertoire
+                            //de l'index courant
+                            fm.copyFile(folder_path + '/' + randomizeList[musicIndex], currentTargetFolder + j + " - " + randomizeList[musicIndex]);
                             }
-                        
-                        //Création du répertoire de destination
-                        fm.createFolder(currentTargetFolder);
-                        System.out.println(currentTargetFolder);
-                        
-                        for (int j=1; j<nbFilePerFolder+1; j++)
-                            {
-                            if (musicIndex < nbFiles)
-                                {
-                                //Déplace un fichier aléatoire dans le répertoire
-                                //de l'index courant
-                                fm.copyFile(folder_path + '/' + randomizeList[musicIndex], currentTargetFolder + j + " - " + randomizeList[musicIndex]);
-                                }
-                            else
-                                {
-                                break;
-                                }
-                            musicIndex ++;
-                            }
-                        
-                        if (musicIndex == nbFiles)
+                        else
                             {
                             break;
                             }
+                        musicIndex ++;
+                        }
+
+                    if (musicIndex == nbFiles)
+                        {
+                        break;
                         }
                     }
                 }
             }
         else
             {
-            ui.displayError(3);
+            ui.displayError(2);
             }
         }
     
