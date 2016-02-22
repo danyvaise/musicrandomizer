@@ -1,7 +1,10 @@
-package fr.hotmail.danyvaise.musicrandomizer;
+package fr.hotmail.danyvaise.vacreator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /*
@@ -9,7 +12,7 @@ import java.util.regex.Pattern;
  * C'est le coeur du programme.
  */
 
-public class MusicRandomizer implements Runnable
+public class VaCreator implements Runnable
     {
     @Override
     public void run()
@@ -42,13 +45,21 @@ public class MusicRandomizer implements Runnable
         ui.enterNbFolders();
         nbFolders = ui.getNbFolders();
         
-        
         //Création de l'objet de gestion fichier/dossier
         //avec passage du répertoire à traiter
         FileFolderManager fm = new FileFolderManager(folder_path);
         
+        try
+            {
+            fm.writeFile("D:\\davy\\java\\NetBeansProjects\\working\\toto\\test.txt", "test");
+            }
+        catch (FileNotFoundException ex)
+            {
+            Logger.getLogger(VaCreator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
         //Liste les fichier du répertoire saisi
-        files = fm.listFiles(folder_path);
+        files = fm.listFiles();
         
         //Récupère le nombre de fichiers à traiter
         nbFiles = files.length;
@@ -73,7 +84,7 @@ public class MusicRandomizer implements Runnable
             folderMod = 1;
             }
        
-        if (fm.getDirectory().isDirectory())
+        if (fm.isDirectory())
             {
             if (nbFiles == 0)
                 {
@@ -236,7 +247,7 @@ public class MusicRandomizer implements Runnable
     
     public static void main(String[] args)
         {
-        Thread T = new Thread(new MusicRandomizer());
+        Thread T = new Thread(new VaCreator());
         
         //Appelle implicitement la méthode run()
         T.start();

@@ -1,4 +1,4 @@
-package fr.hotmail.danyvaise.musicrandomizer;
+package fr.hotmail.danyvaise.vacreator;
 
 import java.util.Scanner;
 
@@ -35,7 +35,7 @@ public class UI
     public void displayHeader()
         {
         System.out.println("=============================");
-        System.out.println("MusicRandomizer 0.2.0");
+        System.out.println("VACreator 0.3.0");
         System.out.println("by @Dany Vaise");
         System.out.println("=============================\n");
         }
