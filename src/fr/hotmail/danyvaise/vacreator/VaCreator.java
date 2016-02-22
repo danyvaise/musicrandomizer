@@ -49,15 +49,6 @@ public class VaCreator implements Runnable
         //avec passage du répertoire à traiter
         FileFolderManager fm = new FileFolderManager(folder_path);
         
-        try
-            {
-            fm.writeFile("D:\\davy\\java\\NetBeansProjects\\working\\toto\\test.txt", "test");
-            }
-        catch (FileNotFoundException ex)
-            {
-            Logger.getLogger(VaCreator.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
         //Liste les fichier du répertoire saisi
         files = fm.listFiles();
         
