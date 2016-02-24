@@ -188,9 +188,33 @@ public class FileFolderManager
     
     //Liste les fichiers de plusieurs répertoires
     //Retourne la liste dans un tableau
-    public File[] listFiles(String tab_path[])
+    public File[] listFiles(String tab_paths[])
         {
         File f_files[] = null;
+        List list = null;
+        
+        for (int i=0; i<tab_paths.length; i++)
+            {
+            File directory = new File(tab_paths[i]);
+            
+            File f_currentFiles[] = directory.listFiles(new FileFilter()
+                {
+                @Override
+                public boolean accept(File pathname)
+                    {
+                    return pathname.isFile();
+                    }
+                });
+            
+            list.add(f_currentFiles);
+            
+            //Alimentation de l'attribut paths
+            //pour sauvegarder le chemin courant
+            //dans le tableau des chemins.
+            paths[i] = tab_paths[i];
+            }
+        
+        list.toArray(f_files);
         
         return f_files;
         }

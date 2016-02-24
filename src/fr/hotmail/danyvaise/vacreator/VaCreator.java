@@ -53,7 +53,11 @@ public class VaCreator implements Runnable
         files = fm.listFiles();
         
         //Récupère le nombre de fichiers à traiter
-        nbFiles = files.length;
+        //si la liste n'est pas vide
+        if (files != null)
+            {
+            nbFiles = files.length;
+            }
 
         if (nbFolders == 0)
             {

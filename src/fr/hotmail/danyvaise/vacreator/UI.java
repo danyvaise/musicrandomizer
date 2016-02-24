@@ -42,16 +42,29 @@ public class UI
     
     public void enterPath()
         {
-        System.out.println("Please enter the music directory : ");
-        path = sc_input.nextLine();
+        while (path.isEmpty())
+            {
+            System.out.println("Please enter the music directory : ");
+            path = sc_input.nextLine();
+            }
         }
     
     public void enterNbFilePerFolder()
         {
         String s = "";
-        System.out.println("Please enter a number of files by directory : ");
-        s = sc_input.nextLine();
-        nbFiles = Integer.parseInt(s);
+        
+        while (nbFiles == 0)
+            {
+            System.out.println("Please enter a number of files by directory : ");
+            s = sc_input.nextLine();
+            
+            if (s.equals(""))
+                {
+                s = "0";
+                }
+            
+            nbFiles = Integer.parseInt(s);
+            }
         }
     
     public void enterNbFolders()
@@ -71,9 +84,13 @@ public class UI
     public void enterTargetFolderPath()
         {
         String s = "";
-        System.out.println("Please enter the target directory : ");
-        s = sc_input.nextLine();
-        targetFolderPath = s;
+        
+        while (targetFolderPath.isEmpty())
+            {
+            System.out.println("Please enter the target directory : ");
+            s = sc_input.nextLine();
+            targetFolderPath = s;
+            }
         }
     
     public void displayFileName(String fileName)
@@ -99,7 +116,7 @@ public class UI
         {
         if (i == 1)
             {
-            System.err.println("\nNo file in the directory !");
+            System.err.println("\nNo files in the directory !");
             }
         
         if (i == 2)
