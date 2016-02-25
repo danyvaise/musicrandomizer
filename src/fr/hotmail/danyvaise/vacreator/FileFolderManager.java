@@ -24,18 +24,11 @@ public class FileFolderManager
     {
     List fileContent;
     String path;
-    String[] paths;
+    List paths = new ArrayList();
     
     public FileFolderManager()
         {
         fileContent = null;
-        path = "";
-        paths = null;
-        }
-    
-    public FileFolderManager(List l_file)
-        {
-        fileContent = l_file;
         path = "";
         paths = null;
         }
@@ -47,7 +40,7 @@ public class FileFolderManager
         paths = null;
         }
     
-    public FileFolderManager(String str_paths[])
+    public FileFolderManager(List str_paths)
         {
         fileContent = null;
         path = "";
@@ -57,7 +50,8 @@ public class FileFolderManager
     //Lit un fichier et met le contenu dans un tableau.
     //Alimente l'attribut file avec le contenu.
     public List readFile() throws FileNotFoundException
-        {List l_file;
+        {
+        List l_file;
         Scanner sc_reader;
         
         l_file = new ArrayList();
@@ -188,14 +182,16 @@ public class FileFolderManager
     
     //Liste les fichiers de plusieurs répertoires
     //Retourne la liste dans un tableau
-    public File[] listFiles(String tab_paths[])
+    public File[] listFiles(List tab_paths)
         {
         File f_files[] = null;
-        List list = null;
+        List list = new ArrayList();
         
-        for (int i=0; i<tab_paths.length; i++)
+        System.out.println(tab_paths.size());
+        
+        for (int i=0; i<tab_paths.size(); i++)
             {
-            File directory = new File(tab_paths[i]);
+            File directory = new File(tab_paths.get(i).toString());
             
             File f_currentFiles[] = directory.listFiles(new FileFilter()
                 {
@@ -206,12 +202,14 @@ public class FileFolderManager
                     }
                 });
             
+            System.out.println(f_currentFiles[i].getName());
+            
             list.add(f_currentFiles);
             
             //Alimentation de l'attribut paths
             //pour sauvegarder le chemin courant
             //dans le tableau des chemins.
-            paths[i] = tab_paths[i];
+            paths.add(tab_paths.get(i).toString());
             }
         
         list.toArray(f_files);
@@ -405,5 +403,15 @@ public class FileFolderManager
     public void setPath(String str_path)
         {
         path = str_path;
+        }
+    
+    public List getPaths()
+        {
+        return paths;
+        }
+    
+    public void setPath(List tab_paths)
+        {
+        paths = tab_paths;
         }
     }

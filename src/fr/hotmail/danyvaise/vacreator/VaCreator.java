@@ -1,6 +1,8 @@
 package fr.hotmail.danyvaise.vacreator;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -16,7 +18,7 @@ public class VaCreator implements Runnable
         {
         //Déclaration et initialisation variables
         UI ui = new UI();
-        String folder_path = "";
+        List folder_paths = new ArrayList();
         File files[] = null;
         int nbFiles = 0;
         int nbFilePerFolder = 0;
@@ -29,8 +31,10 @@ public class VaCreator implements Runnable
         
         //Saisie utilisateur du chemin
         //du répertoire à traiter
-        ui.enterPath();
-        folder_path = ui.getPath();
+        ui.enterSourceFolders();
+        folder_paths = ui.getPaths();
+        
+        System.out.println("DEBUG   -->   " + folder_paths);
         
         //Saisie utilisateur du nombre
         //de fichiers par répertoire
@@ -44,10 +48,12 @@ public class VaCreator implements Runnable
         
         //Création de l'objet de gestion fichier/dossier
         //avec passage du répertoire à traiter
-        FileFolderManager fm = new FileFolderManager(folder_path);
+        FileFolderManager fm = new FileFolderManager(folder_paths);
         
-        //Liste les fichier du répertoire saisi
-        files = fm.listFiles();
+        //Liste les fichier de/des répertoire(s) saisi(s)
+        files = fm.listFiles(folder_paths);
+        
+        System.out.println(files.length);
         
         //Récupère le nombre de fichiers à traiter
         //si la liste n'est pas vide
@@ -55,8 +61,15 @@ public class VaCreator implements Runnable
             {
             nbFiles = files.length;
             }
+        
+        //DEBUG
+        for (int i=0; i<files.length; i++)
+            {
+            System.out.println(files[i]);
+            }
+        //DEBUG
 
-        if (nbFolders == 0)
+        /*if (nbFolders == 0)
             {
             //Calcul du nombre de répertoires à créer
             nbFolders = nbFiles/nbFilePerFolder;
@@ -65,7 +78,7 @@ public class VaCreator implements Runnable
              Si un reste de la division existe
              on crée 1 répertorie en plus
              pour les musiques restantes
-            */
+            *
             if (nbFiles%nbFilePerFolder > 0)
                 {
                 nbFolders += 1;
@@ -115,10 +128,10 @@ public class VaCreator implements Runnable
                     //on le déplace dans le dossier corbeille
                     if (extensionCheck == false)
                         {
-                        String trashFolder = folder_path + "/_TRASH_/";
+                        String trashFolder = folder_path[0] + "/_TRASH_/";
                         //Création du répertoire corbeille
                         fm.createFolder(trashFolder);
-                        fm.moveFile(folder_path + '/' + filename, trashFolder + filename);
+                        fm.moveFile(folder_path[0] + '/' + filename, trashFolder + filename);
                         }
 
                     if (i == nbFiles-1)
@@ -139,7 +152,7 @@ public class VaCreator implements Runnable
                  Peuplement de la liste des fichiers à randomizer
                  Chaque nouveau fichier randomizé ne doit pas
                  figurer dans la black liste
-                */
+                *
                 for (int i=0; i<nbFiles; i++)
                     {
                     int randomIndex = 0;
@@ -192,7 +205,7 @@ public class VaCreator implements Runnable
                 
                 /***
                  Partie copie des fichiers vers le targetFolder
-                */
+                *
                 for (int i=1; i<nbFolders+1; i++)
                     {
                     String currentTargetFolder = targetFolder;
@@ -215,7 +228,7 @@ public class VaCreator implements Runnable
                             {
                             //Déplace un fichier aléatoire dans le répertoire
                             //de l'index courant
-                            fm.copyFile(folder_path + '/' + randomizeList[musicIndex], currentTargetFolder + j + " - " + randomizeList[musicIndex]);
+                            fm.copyFile(folder_path[0] + '/' + randomizeList[musicIndex], currentTargetFolder + j + " - " + randomizeList[musicIndex]);
                             }
                         else
                             {
@@ -234,7 +247,7 @@ public class VaCreator implements Runnable
         else
             {
             ui.displayError(2);
-            }
+            }*/
         }
     
     public static void main(String[] args)

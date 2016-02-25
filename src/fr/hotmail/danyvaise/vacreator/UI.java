@@ -1,5 +1,7 @@
 package fr.hotmail.danyvaise.vacreator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /*
@@ -9,7 +11,7 @@ import java.util.Scanner;
 public class UI
     {
     Scanner sc_input;
-    String path;
+    List paths = new ArrayList();
     String targetFolderPath;
     int nbFiles;
     int nbFolders;
@@ -17,16 +19,15 @@ public class UI
     public UI()
         {
         sc_input = new Scanner(System.in);
-        path = "";
         targetFolderPath = "";
         nbFiles = 0;
         nbFolders = 0;
         }
     
-    public UI(String str_path, String str_targetFolderPath, int i_nbFiles, int i_nbFolders)
+    public UI(List tab_paths, String str_targetFolderPath, int i_nbFiles, int i_nbFolders)
         {
         sc_input = new Scanner(System.in);
-        path = str_path;
+        paths = tab_paths;
         targetFolderPath = str_targetFolderPath;
         nbFiles = i_nbFiles;
         nbFolders = i_nbFolders;
@@ -40,12 +41,37 @@ public class UI
         System.out.println("=============================\n");
         }
     
-    public void enterPath()
+    public void enterSourceFolders()
         {
-        while (path.isEmpty())
+        int i = 0;
+        String addFolder = "YES";
+        Boolean empty = true;
+            
+        while (empty == true || addFolder.equals("YES"))
             {
+            String str_tmp = "";
             System.out.println("Please enter the music directory : ");
-            path = sc_input.nextLine();
+            str_tmp = sc_input.nextLine();
+            empty = str_tmp.isEmpty();
+            
+            if (empty == false)
+                {
+                paths.add(str_tmp);
+                System.out.println("Do you want to add another folder ? YES/NO");
+                addFolder = sc_input.nextLine();
+                
+                if (addFolder.equals("YES"))
+                    {
+                    i++;
+                    }
+                else
+                    {
+                    if (addFolder.equals("NO"))
+                        {
+                        break;
+                        }
+                    }
+                }
             }
         }
     
@@ -125,14 +151,14 @@ public class UI
             }
         }
     
-    public String getPath()
+    public List getPaths()
         {
-        return path;
+        return paths;
         }
     
-    public void setPath(String str_path)
+    public void setPaths(List tab_paths)
         {
-        path = str_path;
+        paths = tab_paths;
         }
     
     public String getTargetFolderPath()
