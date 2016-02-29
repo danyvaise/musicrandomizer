@@ -45,13 +45,11 @@ public class VaCreator implements Runnable
         nbFolders = ui.getNbFolders();
         
         //Création de l'objet de gestion fichier/dossier
-        //avec passage du répertoire à traiter
+        //avec passage des répertoires à traiter
         FileFolderManager fm = new FileFolderManager(folder_paths);
         
         //Liste les fichier de/des répertoire(s) rentrés dans l'objet
-        files = fm.listFilesSeveralFolders();
-        
-        System.out.println(files.length);
+        files = fm.listFileFromFolders();
         
         //Récupère le nombre de fichiers à traiter
         //si la liste n'est pas vide
@@ -59,15 +57,8 @@ public class VaCreator implements Runnable
             {
             nbFiles = files.length;
             }
-        
-        //DEBUG
-        for (int i=0; i<files.length; i++)
-            {
-            System.out.println(files[i]);
-            }
-        //DEBUG
 
-        /*if (nbFolders == 0)
+        if (nbFolders == 0)
             {
             //Calcul du nombre de répertoires à créer
             nbFolders = nbFiles/nbFilePerFolder;
@@ -76,7 +67,7 @@ public class VaCreator implements Runnable
              Si un reste de la division existe
              on crée 1 répertorie en plus
              pour les musiques restantes
-            *
+            */
             if (nbFiles%nbFilePerFolder > 0)
                 {
                 nbFolders += 1;
@@ -95,9 +86,10 @@ public class VaCreator implements Runnable
                 }
             else
                 {
-                String targetFolder = folder_path + "/VA-Randomized";
+                String targetFolder = "./VA-Randomized";
 
                 String filename = "";
+                String fullPath = "";
 
                 int musicIndex = 0;
 
@@ -110,12 +102,17 @@ public class VaCreator implements Runnable
                     }
 
                 targetFolder += '/';
+                
+                //DEBUG
+                System.out.println(targetFolder);
+                //DEBUG
 
                 //Purge des fichier non musicaux
                 //Déplacement dans le dossier corbeille
                 for (int i=0; i<nbFiles; i++)
                     {
                     filename = files[i].getName().toLowerCase();
+                    fullPath = files[i].getAbsolutePath();
 
                     Pattern pattern = Pattern.compile(".mp3|.flac|.wave|.wma|.m4a");
 
@@ -126,15 +123,15 @@ public class VaCreator implements Runnable
                     //on le déplace dans le dossier corbeille
                     if (extensionCheck == false)
                         {
-                        String trashFolder = folder_path[0] + "/_TRASH_/";
+                        String trashFolder = "./_TRASH_/";
                         //Création du répertoire corbeille
                         fm.createFolder(trashFolder);
-                        fm.moveFile(folder_path[0] + '/' + filename, trashFolder + filename);
+                        fm.moveFile(fullPath, trashFolder + filename);
                         }
 
                     if (i == nbFiles-1)
                         {
-                        files = fm.listFiles(folder_path);
+                        files = fm.listFileFromFolders(folder_paths);
                         nbFiles = files.length;
                         }
                     }
@@ -150,7 +147,7 @@ public class VaCreator implements Runnable
                  Peuplement de la liste des fichiers à randomizer
                  Chaque nouveau fichier randomizé ne doit pas
                  figurer dans la black liste
-                *
+                */
                 for (int i=0; i<nbFiles; i++)
                     {
                     int randomIndex = 0;
@@ -162,9 +159,10 @@ public class VaCreator implements Runnable
 
                         //Retourne le nom du fichier à la position de l'index
                         filename = files[randomIndex].getName();
+                        fullPath = files[randomIndex].getAbsolutePath();
 
                         //Peuplement du tableau avec le nom du fichier à randomizer
-                        randomizeList[i] = filename;
+                        randomizeList[i] = fullPath;
 
                         //Ajout du fichier dans la black liste
                         blackList[i] = filename;
@@ -178,6 +176,7 @@ public class VaCreator implements Runnable
 
                         randomIndex = rand.nextInt(nbFiles);
                         filename = files[randomIndex].getName();
+                        fullPath = files[randomIndex].getAbsolutePath();
 
                         inBlackList = checkStringInTab(filename, blackList);
 
@@ -187,14 +186,15 @@ public class VaCreator implements Runnable
                                 {
                                 randomIndex = rand.nextInt(nbFiles);
                                 filename = files[randomIndex].getName();
+                                fullPath = files[randomIndex].getAbsolutePath();
                                 inBlackList = checkStringInTab(filename, blackList);
                                 }
-                            randomizeList[i] = filename;
+                            randomizeList[i] = fullPath;
                             blackList[i] = filename;
                             }
                         else
                             {
-                            randomizeList[i] = filename;
+                            randomizeList[i] = fullPath;
                             blackList[i] = filename;
                             }
                         }
@@ -203,7 +203,7 @@ public class VaCreator implements Runnable
                 
                 /***
                  Partie copie des fichiers vers le targetFolder
-                *
+                */
                 for (int i=1; i<nbFolders+1; i++)
                     {
                     String currentTargetFolder = targetFolder;
@@ -224,9 +224,16 @@ public class VaCreator implements Runnable
                         {
                         if (musicIndex < nbFiles)
                             {
+                            Pattern pattern = Pattern.compile("$\\(.*.*{3})");
+                            filename = pattern.matcher(filename).group();
+                            
+                            System.out.println(filename);
+                            
+                            fullPath = randomizeList[musicIndex];
+                            
                             //Déplace un fichier aléatoire dans le répertoire
                             //de l'index courant
-                            fm.copyFile(folder_path[0] + '/' + randomizeList[musicIndex], currentTargetFolder + j + " - " + randomizeList[musicIndex]);
+                            fm.copyFile(fullPath, currentTargetFolder + j + " - " + filename);
                             }
                         else
                             {
@@ -245,7 +252,7 @@ public class VaCreator implements Runnable
         else
             {
             ui.displayError(2);
-            }*/
+            }
         }
     
     public static void main(String[] args)

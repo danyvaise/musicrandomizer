@@ -142,7 +142,7 @@ public class FileFolderManager
     
     //Liste les fichiers d'un répertoire
     //Retourne la liste dans un tableau
-    public File[] listFilesOneFolder(String str_path)
+    public File[] listFileFromFolder(String str_path)
         {
         File directory = new File(str_path);
         
@@ -164,16 +164,16 @@ public class FileFolderManager
     
     //Liste les fichiers du répertoire de l'objet
     //Retourne la liste dans un tableau
-    public File[] listFilesOneFolder()
+    public File[] listFileFromFolder()
         {
-        File f_files[] = this.listFilesOneFolder(this.getPath());
+        File f_files[] = this.listFileFromFolder(this.getPath());
         
         return f_files;
         }
     
     //Liste les fichiers de plusieurs répertoires
     //Retourne la liste dans un tableau
-    public File[] listFilesSeveralFolders(List tab_paths)
+    public File[] listFileFromFolders(List tab_paths)
         {
         int nbPaths = tab_paths.size();
         int index = 0;
@@ -183,7 +183,7 @@ public class FileFolderManager
         for (int i=0; i<nbPaths; i++)
             {
             String str_path = tab_paths.get(i).toString();
-            File f_file[] = this.listFilesOneFolder(str_path);
+            File f_file[] = this.listFileFromFolder(str_path);
             
             nbFiles += f_file.length;
             
@@ -198,7 +198,7 @@ public class FileFolderManager
         for (int i=0; i<nbPaths; i++)
             {
             String str_path = tab_paths.get(i).toString();
-            File f_file[] = this.listFilesOneFolder(str_path);
+            File f_file[] = this.listFileFromFolder(str_path);
             for (File f_file1 : f_file)
                 {
                 f_files[index] = f_file1;
@@ -211,9 +211,9 @@ public class FileFolderManager
     
     //Liste les fichiers des répertoires de l'objet
     //Retourne la liste dans un tableau
-    public File[] listFilesSeveralFolders()
+    public File[] listFileFromFolders()
         {
-        File f_files[] = this.listFilesSeveralFolders(this.getPaths());
+        File f_files[] = this.listFileFromFolders(this.getPaths());
         
         return f_files;
         }
@@ -229,7 +229,7 @@ public class FileFolderManager
     public void deleteFolder()
         {
         File dir = new File(this.getPath());
-        File[] f_files = listFilesOneFolder(this.getPath());
+        File[] f_files = listFileFromFolder(this.getPath());
         
         if (dir.isDirectory())
             {
@@ -250,7 +250,7 @@ public class FileFolderManager
     public void deleteFolder(String str_path)
         {
         File dir = new File(str_path);
-        File[] f_files = listFilesOneFolder(str_path);
+        File[] f_files = listFileFromFolder(str_path);
         
         if (dir.isDirectory())
             {

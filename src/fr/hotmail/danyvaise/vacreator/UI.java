@@ -110,13 +110,9 @@ public class UI
     public void enterTargetFolderPath()
         {
         String s = "";
-        
-        while (targetFolderPath.isEmpty())
-            {
-            System.out.println("Please enter the target directory : ");
-            s = sc_input.nextLine();
-            targetFolderPath = s;
-            }
+        System.out.println("Please enter the target directory : ");
+        s = sc_input.nextLine();
+        targetFolderPath = s;
         }
     
     public void displayFileName(String fileName)
