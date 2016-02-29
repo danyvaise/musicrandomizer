@@ -34,8 +34,6 @@ public class VaCreator implements Runnable
         ui.enterSourceFolders();
         folder_paths = ui.getPaths();
         
-        System.out.println("DEBUG   -->   " + folder_paths);
-        
         //Saisie utilisateur du nombre
         //de fichiers par répertoire
         ui.enterNbFilePerFolder();
@@ -50,8 +48,8 @@ public class VaCreator implements Runnable
         //avec passage du répertoire à traiter
         FileFolderManager fm = new FileFolderManager(folder_paths);
         
-        //Liste les fichier de/des répertoire(s) saisi(s)
-        files = fm.listFiles(folder_paths);
+        //Liste les fichier de/des répertoire(s) rentrés dans l'objet
+        files = fm.listFilesSeveralFolders();
         
         System.out.println(files.length);
         

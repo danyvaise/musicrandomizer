@@ -58,7 +58,7 @@ public class UI
                 {
                 paths.add(str_tmp);
                 System.out.println("Do you want to add another folder ? YES/NO");
-                addFolder = sc_input.nextLine();
+                addFolder = sc_input.nextLine().toUpperCase();
                 
                 if (addFolder.equals("YES"))
                     {
