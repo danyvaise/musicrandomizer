@@ -148,6 +148,11 @@ public class UI
             }
         }
     
+    public void displayFolder(String str_folder)
+        {
+        System.out.println(str_folder);
+        }
+    
     public List getPaths()
         {
         return paths;

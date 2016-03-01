@@ -121,6 +121,7 @@ public class VaCreator implements Runnable
 
                 //Purge des fichier non musicaux
                 //Déplacement dans le dossier corbeille
+                int wrongFileCount = 1;
                 for (int i=0; i<nbFiles; i++)
                     {
                     filename = files[i].getName().toLowerCase();
@@ -138,14 +139,15 @@ public class VaCreator implements Runnable
                         String trashFolder = "./_TRASH_/";
                         //Création du répertoire corbeille
                         fm.createFolder(trashFolder);
-                        fm.moveFile(fullPath, trashFolder + filename);
+                        fm.moveFile(fullPath, trashFolder + "[" + wrongFileCount + "] " + filename);
+                        wrongFileCount ++;
                         }
 
                     if (i == nbFiles-1)
                         {
-                        //files = fm.listFileFromFolders();
                         nbFiles = files.length;
-                        System.arraycopy(fm.listFileFromFolders(), 0, files, 0, nbFiles);
+                        System.arraycopy(fm.listFileFromFolders(folder_paths), 0, files, 0, nbFiles);
+                        System.out.println("==========================================> " + fm.listFileFromFolders(folder_paths).length);//folder_paths
                         }
                     }
 
@@ -233,7 +235,7 @@ public class VaCreator implements Runnable
                     fm.createFolder(currentTargetFolder);
 
                     //Affichage du répertoire en cours de traitement
-                    System.out.println(currentTargetFolder);
+                    ui.displayFolder(currentTargetFolder);
 
                     for (int j=1; j<nbFilePerFolder+1; j++)
                         {
@@ -248,7 +250,7 @@ public class VaCreator implements Runnable
                             if (matcher.find())
                                 {
                                 filename = matcher.group(1);
-                                System.out.println(filename);
+                                //System.out.println(filename);
                                 }
                             
                             //Déplace un fichier aléatoire dans le répertoire
