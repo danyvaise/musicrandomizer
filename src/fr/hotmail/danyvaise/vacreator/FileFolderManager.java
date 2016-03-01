@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 /*
  * Classe de gestion de fichier/dossier.
  * Permet de lire ou écrire des fichiers texte,
@@ -166,7 +167,9 @@ public class FileFolderManager
     //Retourne la liste dans un tableau
     public File[] listFileFromFolder()
         {
-        File f_files[] = this.listFileFromFolder(this.getPath());
+        int nbFiles = this.listFileFromFolder(this.getPath()).length;
+        File f_files[] = new File[nbFiles];
+        System.arraycopy(this.listFileFromFolder(this.getPath()), 0, f_files, 0, nbFiles);
         
         return f_files;
         }
@@ -213,7 +216,9 @@ public class FileFolderManager
     //Retourne la liste dans un tableau
     public File[] listFileFromFolders()
         {
-        File f_files[] = this.listFileFromFolders(this.getPaths());
+        int nbFiles = this.listFileFromFolders(this.getPaths()).length;
+        File f_files[] = new File[nbFiles];
+        System.arraycopy(this.listFileFromFolders(this.getPaths()), 0, f_files, 0, nbFiles);
         
         return f_files;
         }
