@@ -140,14 +140,14 @@ public class VaCreator implements Runnable
                         //Création du répertoire corbeille
                         fm.createFolder(trashFolder);
                         fm.moveFile(fullPath, trashFolder + "[" + wrongFileCount + "] " + filename);
-                        wrongFileCount ++;
+                        wrongFileCount++;
                         }
 
                     if (i == nbFiles-1)
                         {
-                        nbFiles = files.length;
+                        wrongFileCount--;
+                        nbFiles -= wrongFileCount;
                         System.arraycopy(fm.listFileFromFolders(folder_paths), 0, files, 0, nbFiles);
-                        System.out.println("==========================================> " + fm.listFileFromFolders(folder_paths).length);//folder_paths
                         }
                     }
 
@@ -189,7 +189,6 @@ public class VaCreator implements Runnable
                         //On randomize le fichier si ce dernier n'est pas matché
                         //Une fois randomizé le fichier est ajouté à la black liste
                         Boolean inBlackList = false;
-
                         randomIndex = rand.nextInt(nbFiles);
                         filename = files[randomIndex].getName();
                         fullPath = files[randomIndex].getAbsolutePath();
@@ -224,7 +223,7 @@ public class VaCreator implements Runnable
                 for (int i=1; i<nbFolders+1; i++)
                     {
                     String currentTargetFolder = targetFolder;
-
+                    
                     if (nbFolders > 1)
                         {
                         //Création du répertoire CD(index) => CD1

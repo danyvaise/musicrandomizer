@@ -167,9 +167,7 @@ public class FileFolderManager
     //Retourne la liste dans un tableau
     public File[] listFileFromFolder()
         {
-        int nbFiles = this.listFileFromFolder(this.getPath()).length;
-        File f_files[] = new File[nbFiles];
-        System.arraycopy(this.listFileFromFolder(this.getPath()), 0, f_files, 0, nbFiles);
+        File f_files[] = this.listFileFromFolder(this.getPath());
         
         return f_files;
         }
@@ -216,9 +214,7 @@ public class FileFolderManager
     //Retourne la liste dans un tableau
     public File[] listFileFromFolders()
         {
-        int nbFiles = this.listFileFromFolders(this.getPaths()).length;
-        File f_files[] = new File[nbFiles];
-        System.arraycopy(this.listFileFromFolders(this.getPaths()), 0, f_files, 0, nbFiles);
+        File f_files[] = this.listFileFromFolders(this.getPaths());
         
         return f_files;
         }
