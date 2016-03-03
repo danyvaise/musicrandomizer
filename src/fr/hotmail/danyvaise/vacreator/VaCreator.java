@@ -28,6 +28,7 @@ public class VaCreator implements Runnable
         int nbFolders = 1;
         int folderMod = 0;
         Random rand = new Random();
+        Boolean atLeastOneFolder = false;
         
         //Affichage de l'entête du programme
         ui.displayHeader();
@@ -47,6 +48,7 @@ public class VaCreator implements Runnable
             if (cleanPath.isDirectory(currentPath) == true)
                 {
                 folder_paths.add(currentPath);
+                atLeastOneFolder = true;
                 }
             }
         
@@ -94,7 +96,7 @@ public class VaCreator implements Runnable
             folderMod = 1;
             }
        
-        if (fm.isDirectory())
+        if (atLeastOneFolder == true)
             {
             if (nbFiles == 0)
                 {

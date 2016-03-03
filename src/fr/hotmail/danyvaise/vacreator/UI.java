@@ -144,7 +144,7 @@ public class UI
         
         if (i == 2)
             {
-            System.err.println("\nThe directory is incorrect !");
+            System.err.println("\nNo correct folder exists !");
             }
         }
     
