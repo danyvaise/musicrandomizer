@@ -19,8 +19,10 @@ public class VaCreator implements Runnable
         {
         //Déclaration et initialisation variables
         UI ui = new UI();
-        List folder_paths_no_clean = new ArrayList();
         List folder_paths = new ArrayList();
+        List filenames_no_clean = new ArrayList();
+        List filesFullpath_no_clean = new ArrayList();
+        File files_no_clean[] = null;
         File files[] = null;
         int nbPaths = 0;
         int nbFiles = 0;
@@ -36,18 +38,22 @@ public class VaCreator implements Runnable
         //Saisie utilisateur du chemin
         //du répertoire à traiter
         ui.enterSourceFolders();
-        folder_paths_no_clean = ui.getPaths();
-        nbPaths = folder_paths_no_clean.size();
+        folder_paths = ui.getPaths();
+        nbPaths = folder_paths.size();
         
         //Clean des chemins pour éviter ceux qui sont incorrects
         FileFolderManager cleanPath = new FileFolderManager();
         for (int i=0; i<nbPaths; i++)
             {
-            String currentPath = folder_paths_no_clean.get(i).toString();
+            String currentPath = folder_paths.get(i).toString();
             
-            if (cleanPath.isDirectory(currentPath) == true)
+            if (cleanPath.isDirectory(currentPath) == false)
                 {
-                folder_paths.add(currentPath);
+                folder_paths.remove(i);
+                nbPaths--;
+                }
+            else
+                {
                 atLeastOneFolder = true;
                 }
             }
@@ -67,13 +73,42 @@ public class VaCreator implements Runnable
         FileFolderManager fm = new FileFolderManager(folder_paths);
         
         //Liste les fichier de/des répertoire(s) rentrés dans l'objet
-        files = fm.listFileFromFolders();
+        files_no_clean = fm.listFileFromFolders();
         
-        //Récupère le nombre de fichiers à traiter
-        //si la liste n'est pas vide
-        if (files != null)
-            {
-            nbFiles = files.length;
+        //Traitement des instructions suivante
+        //si un ou plusieurs fichiers existent
+        if (files_no_clean != null)
+            { 
+            for (int i=0; i<files_no_clean.length; i++)
+                {
+                filenames_no_clean.add(files_no_clean[i].getName());
+                filesFullpath_no_clean.add(files_no_clean[i].getAbsolutePath());
+                }
+            
+            //On élimine les doublons pour ne pas avoir
+            //plusieurs fois le même fichier
+            int inBlackList = 0;
+            nbFiles = files_no_clean.length;
+            for (int i=0; i<nbFiles; i++)
+                {
+                String filename = filenames_no_clean.get(i).toString();
+                inBlackList = matchStringInTab(filename, filenames_no_clean, true);
+                
+                if (inBlackList > 1)
+                    {
+                    filenames_no_clean.remove(i);
+                    filesFullpath_no_clean.remove(i);
+                    nbFiles--;
+                    }
+                }
+            
+            nbFiles = filesFullpath_no_clean.size();
+            files = new File[nbFiles];
+            for (int i=0; i<filesFullpath_no_clean.size(); i++)
+                {
+                File currentFile = new File(filesFullpath_no_clean.get(i).toString());
+                files[i] = currentFile;
+                }
             }
 
         if (nbFolders == 0)
@@ -190,21 +225,21 @@ public class VaCreator implements Runnable
                         //Parcours de la liste d'exclusion
                         //On randomize le fichier si ce dernier n'est pas matché
                         //Une fois randomizé le fichier est ajouté à la black liste
-                        Boolean inBlackList = false;
+                        int inBlackList = 0;
                         randomIndex = rand.nextInt(nbFiles);
                         filename = files[randomIndex].getName();
                         fullPath = files[randomIndex].getAbsolutePath();
 
-                        inBlackList = checkStringInTab(filename, blackList);
+                        inBlackList = matchStringInTab(filename, blackList, false);
 
-                        if (inBlackList)
+                        if (inBlackList > 0)
                             {
-                            while (inBlackList)
+                            while (inBlackList > 0)
                                 {
                                 randomIndex = rand.nextInt(nbFiles);
                                 filename = files[randomIndex].getName();
                                 fullPath = files[randomIndex].getAbsolutePath();
-                                inBlackList = checkStringInTab(filename, blackList);
+                                inBlackList = matchStringInTab(filename, blackList, false);
                                 }
                             randomizeList[i][0] = filename;
                             randomizeList[i][1] = fullPath;
@@ -286,19 +321,41 @@ public class VaCreator implements Runnable
         T.start();
         }
     
-    public Boolean checkStringInTab(String str, String str_tab[])
+    public int matchStringInTab(String str, String str_tab[], Boolean checkSeveralMatches)
         {
-        Boolean b = false;
+        int count = 0;
         
         for (int i=0; i<str_tab.length; i++)
             {
             if (str.equals(str_tab[i]))
                 {
-                b = true;
-                break;
+                count++;
+                if (!checkSeveralMatches)
+                    {
+                    break;
+                    }
                 }
             }
         
-        return b;
+        return count;
+        }
+    
+    public int matchStringInTab(String str, List str_list, Boolean checkSeveralMatches)
+        {
+        int count = 0;
+        
+        for (int i=0; i<str_list.size(); i++)
+            {
+            if (str.equals(str_list.get(i).toString()))
+                {
+                count++;
+                if (!checkSeveralMatches)
+                    {
+                    break;
+                    }
+                }
+            }
+        
+        return count;
         }
     }
