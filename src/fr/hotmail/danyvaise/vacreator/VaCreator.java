@@ -50,7 +50,7 @@ public class VaCreator implements Runnable
                 folder_paths.add(currentPath);
                 atLeastOneFolder = true;
                 }
-            }
+            } 
         
         //Saisie utilisateur du nombre
         //de fichiers par répertoire
