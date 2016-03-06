@@ -89,18 +89,8 @@ public class VaCreator implements Runnable
             //plusieurs fois le même fichier
             int inBlackList = 0;
             nbFiles = files_no_clean.length;
-            for (int i=0; i<nbFiles; i++)
-                {
-                String filename = filenames_no_clean.get(i).toString();
-                inBlackList = matchStringInTab(filename, filenames_no_clean, true);
-                
-                if (inBlackList > 1)
-                    {
-                    filenames_no_clean.remove(i);
-                    filesFullpath_no_clean.remove(i);
-                    nbFiles--;
-                    }
-                }
+            
+            purgeWrongFiles(filenames_no_clean, filesFullpath_no_clean, nbFiles, inBlackList);
             
             nbFiles = filesFullpath_no_clean.size();
             files = new File[nbFiles];
@@ -110,17 +100,15 @@ public class VaCreator implements Runnable
                 files[i] = currentFile;
                 }
             }
-
+        
         if (nbFolders == 0)
             {
             //Calcul du nombre de répertoires à créer
             nbFolders = nbFiles/nbFilePerFolder;
             
-            /***
-             Si un reste de la division existe
-             on crée 1 répertorie en plus
-             pour les musiques restantes
-            */
+            //Si un reste de la division existe
+            //on crée 1 répertorie en plus
+            //pour les musiques restantes
             if (nbFiles%nbFilePerFolder > 0)
                 {
                 nbFolders += 1;
@@ -156,50 +144,16 @@ public class VaCreator implements Runnable
 
                 targetFolder += '/';
 
-                //Purge des fichier non musicaux
-                //Déplacement dans le dossier corbeille
-                int wrongFileCount = 1;
-                for (int i=0; i<nbFiles; i++)
-                    {
-                    filename = files[i].getName().toLowerCase();
-                    fullPath = files[i].getAbsolutePath();
-
-                    Pattern pattern = Pattern.compile(".mp3|.flac|.wave|.wma|.m4a");
-
-                    //Vérification que le fichier est une extension musicale
-                    Boolean extensionCheck = pattern.matcher(filename).find();
-
-                    //Si le fichier n'a pas d'extension aurorisée
-                    //on le déplace dans le dossier corbeille
-                    if (extensionCheck == false)
-                        {
-                        String trashFolder = "./_TRASH_/";
-                        //Création du répertoire corbeille
-                        fm.createFolder(trashFolder);
-                        fm.moveFile(fullPath, trashFolder + "[" + wrongFileCount + "] " + filename);
-                        wrongFileCount++;
-                        }
-
-                    if (i == nbFiles-1)
-                        {
-                        wrongFileCount--;
-                        nbFiles -= wrongFileCount;
-                        System.arraycopy(fm.listFileFromFolders(folder_paths), 0, files, 0, nbFiles);
-                        }
-                    }
-
                 //Création de la liste des fichiers random
                 String randomizeList[][] = new String[nbFiles][nbFiles];
 
                 //Création de la liste d'exclusion
                 String blackList[] = new String[nbFiles];
 
-                /***
-                 Partie calcul du randomize
-                 Peuplement de la liste des fichiers à randomizer
-                 Chaque nouveau fichier randomizé ne doit pas
-                 figurer dans la black liste
-                */
+                //Partie calcul du randomize
+                //Peuplement de la liste des fichiers à randomizer
+                //Chaque nouveau fichier randomizé ne doit pas
+                //figurer dans la black liste
                 for (int i=0; i<nbFiles; i++)
                     {
                     int randomIndex = 0;
@@ -229,7 +183,6 @@ public class VaCreator implements Runnable
                         randomIndex = rand.nextInt(nbFiles);
                         filename = files[randomIndex].getName();
                         fullPath = files[randomIndex].getAbsolutePath();
-
                         inBlackList = matchStringInTab(filename, blackList, false);
 
                         if (inBlackList > 0)
@@ -254,9 +207,7 @@ public class VaCreator implements Runnable
                         }
                     }
                 
-                /***
-                 Partie copie des fichiers vers le targetFolder
-                */
+                //Partie copie des fichiers vers le targetFolder
                 for (int i=1; i<nbFolders+1; i++)
                     {
                     String currentTargetFolder = targetFolder;
@@ -319,6 +270,36 @@ public class VaCreator implements Runnable
         
         //Appelle implicitement la méthode run()
         T.start();
+        }
+    
+    public void purgeWrongFiles(List filenames_no_clean, List filesFullpath_no_clean, int nbFiles, int inBlackList)
+        {
+        int occurs = nbFiles;
+        
+        for (int i=0; i<nbFiles; i++)
+            {
+            String filename = filenames_no_clean.get(i).toString();
+            inBlackList = matchStringInTab(filename, filenames_no_clean, true);
+
+            Pattern pattern = Pattern.compile(".mp3|.flac|.wave|.wma|.m4a");
+
+            //Vérification que le fichier est une extension musicale
+            Boolean extensionCheck = pattern.matcher(filename).find();
+
+            if (inBlackList > 1 || !extensionCheck)
+                {
+                filenames_no_clean.remove(i);
+                filesFullpath_no_clean.remove(i);
+                nbFiles--;
+                }
+            }
+        
+        occurs -= nbFiles;
+        
+        if (occurs > 0 )
+            {
+            purgeWrongFiles(filenames_no_clean, filesFullpath_no_clean, nbFiles, inBlackList);
+            }
         }
     
     public int matchStringInTab(String str, String str_tab[], Boolean checkSeveralMatches)
