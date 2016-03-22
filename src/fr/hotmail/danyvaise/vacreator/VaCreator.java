@@ -101,6 +101,14 @@ public class VaCreator implements Runnable
                 }
             }
         
+        //Valeur par défaut du nombre de fichiers
+        //par répertoire si valeur non remplie
+        //ou égale à 0
+        if (nbFilePerFolder == 0)
+            {
+            nbFilePerFolder = nbFiles;
+            }
+        
         if (nbFolders == 0)
             {
             //Calcul du nombre de répertoires à créer

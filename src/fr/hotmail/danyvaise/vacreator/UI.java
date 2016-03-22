@@ -37,7 +37,7 @@ public class UI
     public void displayHeader()
         {
         System.out.println("=============================");
-        System.out.println("VACreator 0.3.0");
+        System.out.println("VACreator 0.4.0");
         System.out.println("by @Dany Vaise");
         System.out.println("=============================\n");
         }
@@ -82,7 +82,7 @@ public class UI
         
         while (nbFiles == 0)
             {
-            System.out.println("Please enter a number of files by directory : ");
+            System.out.println("Please enter a number of files by directory.\n0 or nothing for unlimited files :");
             s = sc_input.nextLine();
             
             if (s.equals(""))
