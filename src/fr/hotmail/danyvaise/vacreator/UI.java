@@ -79,19 +79,15 @@ public class UI
     public void enterNbFilePerFolder()
         {
         String s = "";
+        System.out.println("Please enter a number of files by directory.\n0 or nothing for unlimited files :");
+        s = sc_input.nextLine();
         
-        while (nbFiles == 0)
+        if (s.equals(""))
             {
-            System.out.println("Please enter a number of files by directory.\n0 or nothing for unlimited files :");
-            s = sc_input.nextLine();
-            
-            if (s.equals(""))
-                {
-                s = "0";
-                }
-            
-            nbFiles = Integer.parseInt(s);
+            s = "0";
             }
+        
+        nbFiles = Integer.parseInt(s);
         }
     
     public void enterNbFolders()
