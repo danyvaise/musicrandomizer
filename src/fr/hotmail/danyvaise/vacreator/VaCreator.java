@@ -109,7 +109,7 @@ public class VaCreator implements Runnable
             nbFilePerFolder = nbFiles;
             }
         
-        if (nbFolders == 0)
+        if (nbFolders == 0 && nbFiles > 0)
             {
             //Calcul du nombre de répertoires à créer
             nbFolders = nbFiles/nbFilePerFolder;
@@ -125,6 +125,7 @@ public class VaCreator implements Runnable
         else
             {
             folderMod = 1;
+            atLeastOneFolder = false;
             }
        
         if (atLeastOneFolder == true)

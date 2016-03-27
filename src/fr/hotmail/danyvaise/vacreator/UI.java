@@ -140,7 +140,7 @@ public class UI
         
         if (i == 2)
             {
-            System.err.println("\nNo correct folder exists !");
+            System.err.println("\nNo music found !");
             }
         }
     
