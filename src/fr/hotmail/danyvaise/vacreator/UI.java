@@ -16,6 +16,7 @@ public class UI
     String targetFolderPath;
     int nbFiles;
     int nbFolders;
+    Boolean blacklist_file;
     
     public UI()
         {
@@ -23,6 +24,7 @@ public class UI
         targetFolderPath = "";
         nbFiles = 0;
         nbFolders = 0;
+        blacklist_file = true;
         }
     
     public UI(List tab_paths, String str_targetFolderPath, int i_nbFiles, int i_nbFolders)
@@ -32,12 +34,13 @@ public class UI
         targetFolderPath = str_targetFolderPath;
         nbFiles = i_nbFiles;
         nbFolders = i_nbFolders;
+        blacklist_file = true;
         }
     
     public void displayHeader()
         {
         System.out.println("=============================");
-        System.out.println("VACreator 0.4.0");
+        System.out.println("VACreator 0.5.0");
         System.out.println("by @Dany Vaise");
         System.out.println("=============================\n");
         }
@@ -51,7 +54,7 @@ public class UI
         while (empty == true || addFolder.equals("YES"))
             {
             String str_tmp = "";
-            System.out.println("Please enter the music directory : ");
+            System.out.println("Please enter the music directory :");
             str_tmp = sc_input.nextLine();
             empty = str_tmp.isEmpty();
             
@@ -107,9 +110,33 @@ public class UI
     public void enterTargetFolderPath()
         {
         String s = "";
-        System.out.println("Please enter the target directory : ");
+        System.out.println("Please enter the target directory :");
         s = sc_input.nextLine();
         targetFolderPath = s;
+        }
+    
+    public void useBlackListFile()
+        {
+        Boolean b = true;
+        String s = "";
+        System.out.println("Would you use the blacklist ? YES/NO (ENTER = YES)");
+        s = sc_input.nextLine();
+        
+        if (s.equals(""))
+            {
+            s = "YES";
+            }
+        else
+            {
+            s = s.toUpperCase();
+            }
+        
+        if (!(s.equals("YES")))
+            {
+            b = false;
+            }
+        
+        blacklist_file = b;
         }
     
     public void displayFileName(String fileName)
@@ -187,5 +214,15 @@ public class UI
     public void setNbFolder(int i_nbFolders)
         {
         nbFolders = i_nbFolders;
+        }
+    
+    public Boolean getblacklistFile()
+        {
+        return blacklist_file;
+        }
+    
+    public void setBlackListFile(Boolean b_blacklist_file)
+        {
+        blacklist_file = b_blacklist_file;
         }
     }

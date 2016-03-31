@@ -1,9 +1,12 @@
 package fr.hotmail.danyvaise.vacreator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -136,6 +139,12 @@ public class VaCreator implements Runnable
                 }
             else
                 {
+                Boolean use_blacklist_file = true;
+                String blacklist_file_path = "./blacklist.txt";
+                int nbBlackListFiles = 0;
+                int nbFullBLackListSize = 0;
+                List blacklist_files = new ArrayList();
+        
                 String targetFolder = "./VA-Randomized";
 
                 String filename = "";
@@ -152,12 +161,45 @@ public class VaCreator implements Runnable
                     }
 
                 targetFolder += '/';
+        
+                //Saisie utilisateur si
+                //utilisation de la blacklist
+                ui.useBlackListFile();
+                use_blacklist_file = ui.getblacklistFile();
+                
+                if (use_blacklist_file)
+                    {
+                    //Test de l'existence du fichier blacklist.txt
+                    if (fm.isFile(blacklist_file_path))
+                        {
+                        try
+                            {
+                            blacklist_files = fm.readFile(blacklist_file_path);
+                            nbBlackListFiles = blacklist_files.size();
+                            nbFullBLackListSize = nbFiles + nbBlackListFiles;
+                            }
+                        catch (FileNotFoundException ex)
+                            {
+                            }
+                        }
+                    }
 
                 //Création de la liste des fichiers random
                 String randomizeList[][] = new String[nbFiles][nbFiles];
 
                 //Création de la liste d'exclusion
-                String blackList[] = new String[nbFiles];
+                String blackList[] = new String[nbFullBLackListSize];
+                
+                if (use_blacklist_file)
+                    {
+                    int index = 0;
+                    System.out.println(nbFullBLackListSize);
+                    for (int i=nbFiles; i<nbFullBLackListSize; i++)
+                        {
+                        blackList[i] = blacklist_files.get(index).toString();
+                        index++;
+                        }
+                    }
 
                 //Partie calcul du randomize
                 //Peuplement de la liste des fichiers à randomizer
@@ -167,7 +209,7 @@ public class VaCreator implements Runnable
                     {
                     int randomIndex = 0;
 
-                    if (i==0)
+                    if (i == 0)
                         {
                         //Retourne sur le total des fichiers un numéro de fichier aléatoire
                         randomIndex = rand.nextInt(nbFiles);
@@ -214,6 +256,11 @@ public class VaCreator implements Runnable
                             blackList[i] = filename;
                             }
                         }
+                    }
+                
+                for (int i=0; i<blackList.length; i++)
+                    {
+                    System.out.println(blackList[i]);
                     }
                 
                 //Partie copie des fichiers vers le targetFolder
