@@ -162,11 +162,6 @@ public class UI
         {
         if (i == 1)
             {
-            System.err.println("\nNo files in the directory !");
-            }
-        
-        if (i == 2)
-            {
             System.err.println("\nNo music found !");
             }
         }
