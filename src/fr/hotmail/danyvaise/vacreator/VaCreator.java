@@ -213,6 +213,11 @@ public class VaCreator implements Runnable
                 blackList = new String[nbFiles];
                 }
 
+            /*for (int i=0; i<blackList.length; i++)
+                {
+                System.out.println(blackList[i]);
+                }*/
+            
             //Partie calcul du randomize
             //Peuplement de la liste des fichiers à randomizer
             //Chaque nouveau fichier randomizé ne doit pas
