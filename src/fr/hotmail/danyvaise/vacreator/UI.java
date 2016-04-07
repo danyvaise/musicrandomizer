@@ -164,6 +164,10 @@ public class UI
             {
             System.err.println("\nNo music found !");
             }
+        if (i == 2)
+            {
+            System.err.println("\nToo folders entered !");
+            }
         }
     
     public void displayFolder(String str_folder)
