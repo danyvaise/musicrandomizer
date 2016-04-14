@@ -334,7 +334,7 @@ public class FileFolderManager
         
         File f_file = new File(this.getPath());
         
-        if (f_file.isFile() == false)
+        if (!f_file.isFile())
             {
             b = false;
             }
@@ -349,7 +349,7 @@ public class FileFolderManager
         
         File f_file = new File(str_path);
         
-        if (f_file.isFile() == false)
+        if (!f_file.isFile())
             {
             b = false;
             }
@@ -364,7 +364,7 @@ public class FileFolderManager
         
         File f_file = new File(this.getPath());
         
-        if (f_file.isDirectory() == false)
+        if (!f_file.isDirectory())
             {
             b = false;
             }
@@ -379,7 +379,7 @@ public class FileFolderManager
         
         File f_file = new File(str_path);
         
-        if (f_file.isDirectory() == false)
+        if (!f_file.isDirectory())
             {
             b = false;
             }

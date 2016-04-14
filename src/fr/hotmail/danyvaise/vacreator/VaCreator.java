@@ -50,7 +50,7 @@ public class VaCreator implements Runnable
             {
             String currentPath = folder_paths.get(i).toString();
             
-            if (cleanPath.isDirectory(currentPath) == false)
+            if (!cleanPath.isDirectory(currentPath))
                 {
                 folder_paths.remove(i);
                 nbPaths--;
@@ -158,18 +158,13 @@ public class VaCreator implements Runnable
                 }
             }
         
-        
-        
-        System.out.println("nbFolders ==> " + nbFolders);
-        System.out.println("nbFiles ==> " + nbFiles);
-        
         if (nbFolders > nbFiles)
             {
             ui.displayError(2);
             }
         else
             {
-            if (atLeastOneFolder == true && nbFiles > 0)
+            if (atLeastOneFolder && nbFiles > 0)
                 {
                 Boolean use_blacklist_file = true;
                 String blacklist_file_path = "./blacklist.txt";
@@ -228,7 +223,7 @@ public class VaCreator implements Runnable
                     }
 
                 //Création de la liste des fichiers random
-                String randomizeList[][] = new String[nbFiles][nbFiles];
+                String randomizeList[][] = new String[nbFiles][nbFiles+1];
 
                 //Création de la liste d'exclusion
                 String blackList[];
@@ -250,20 +245,18 @@ public class VaCreator implements Runnable
                     blackList = new String[nbFiles];
                     }
 
-                for (int i=0; i<blackList.length; i++)
-                    {
-                    System.out.println(blackList[i]);
-                    }
-
+                nbFullBLackListSize = blackList.length;
+                
                 //Partie calcul du randomize
                 //Peuplement de la liste des fichiers à randomizer
                 //Chaque nouveau fichier randomizé ne doit pas
                 //figurer dans la black liste
+                
                 for (int i=0; i<nbFiles; i++)
                     {
                     int randomIndex = 0;
 
-                    if (i == 0 && use_blacklist_file == false)
+                    if (i == 0 && !use_blacklist_file)
                         {
                         //Retourne sur le total des fichiers un numéro de fichier aléatoire
                         randomIndex = rand.nextInt(nbFilesLoaded);
@@ -285,6 +278,7 @@ public class VaCreator implements Runnable
                         //On randomize le fichier si ce dernier n'est pas matché
                         //Une fois randomizé le fichier est ajouté à la black liste
                         int inBlackList = 0;
+                        
                         randomIndex = rand.nextInt(nbFilesLoaded);
                         filename = files[randomIndex].getName();
                         fullPath = files[randomIndex].getAbsolutePath();
@@ -292,16 +286,24 @@ public class VaCreator implements Runnable
 
                         if (inBlackList > 0)
                             {
-                            while (inBlackList > 0)
+                            //
+                            int nbMatched = 0;
+                            
+                            while (inBlackList > 0 && nbMatched < nbFullBLackListSize)
                                 {
                                 randomIndex = rand.nextInt(nbFilesLoaded);
                                 filename = files[randomIndex].getName();
                                 fullPath = files[randomIndex].getAbsolutePath();
                                 inBlackList = matchStringInTab(filename, blackList, false);
+                                nbMatched ++;
                                 }
-                            randomizeList[i][0] = filename;
-                            randomizeList[i][1] = fullPath;
-                            blackList[i] = filename;
+                            
+                            if (nbMatched < nbFullBLackListSize)
+                                {
+                                randomizeList[i][0] = filename;
+                                randomizeList[i][1] = fullPath;
+                                blackList[i] = filename;
+                                }
                             }
                         else
                             {
@@ -335,18 +337,25 @@ public class VaCreator implements Runnable
                             {
                             filename = randomizeList[musicIndex][0];
                             fullPath = randomizeList[musicIndex][1];
-
-                            Pattern pattern = Pattern.compile("^[0-9]*? - (.*)");
-                            Matcher matcher = pattern.matcher(filename);
-
-                            if (matcher.find())
+                            
+                            if (filename != null)
                                 {
-                                filename = matcher.group(1);
-                                }
+                                Pattern pattern = Pattern.compile("^[0-9]*? - (.*)");
+                                Matcher matcher = pattern.matcher(filename);
 
-                            //Déplace un fichier aléatoire dans le répertoire
-                            //de l'index courant
-                            fm.copyFile(fullPath, currentTargetFolder + j + " - " + filename);
+                                if (matcher.find())
+                                    {
+                                    filename = matcher.group(1);
+                                    }
+
+                                //Déplace un fichier aléatoire dans le répertoire
+                                //de l'index courant
+                                fm.copyFile(fullPath, currentTargetFolder + j + " - " + filename);
+                                }
+                            else
+                                {
+                                break;
+                                }
                             }
                         else
                             {
@@ -366,9 +375,12 @@ public class VaCreator implements Runnable
                     {
                     List filesToBlacklist = new ArrayList();
 
-                    for (int i=0; i<blackList.length; i++)
+                    for (int i=0; i<nbFullBLackListSize; i++)
                         {
-                        filesToBlacklist.add(blackList[i]);
+                        if (blackList[i] != null)
+                            {
+                            filesToBlacklist.add(blackList[i]);
+                            }
                         }
 
                     try
@@ -433,7 +445,6 @@ public class VaCreator implements Runnable
             {
             if (str.equals(str_tab[i]))
                 {
-                System.out.println(str);
                 count++;
                 if (!checkSeveralMatches)
                     {

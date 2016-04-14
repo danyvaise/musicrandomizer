@@ -51,14 +51,14 @@ public class UI
         String addFolder = "YES";
         Boolean empty = true;
             
-        while (empty == true || addFolder.equals("YES"))
+        while (empty || addFolder.equals("YES"))
             {
             String str_tmp = "";
             System.out.println("Please enter the music directory :");
             str_tmp = sc_input.nextLine();
             empty = str_tmp.isEmpty();
             
-            if (empty == false)
+            if (!empty)
                 {
                 paths.add(str_tmp);
                 System.out.println("Do you want to add another folder ? YES/NO");
