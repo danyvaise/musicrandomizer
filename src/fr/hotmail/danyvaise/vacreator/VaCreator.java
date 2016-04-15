@@ -105,27 +105,20 @@ public class VaCreator implements Runnable
                 }
             }
         
-        //Si pas de nombre de répertoire saisi
-        //et nombre de fichiers rempli
-        //on crée 1 seul répertoire
-        if (nbFolders == 0 && nbFilePerFolder > 0)
-            {
-            oneFolder = true;
-            }
-        
         //Valeur par défaut du nombre de fichiers
         //par répertoire si valeur non remplie
         //ou égale à 0
         if (nbFilePerFolder == 0)
             {
             nbFilePerFolder = nbFiles;
+            oneFolder = true;
             }
         
         //Calcul du nombre de répertoires à créer
         //si l'utilisateur choisi le mode
         //nombe de répertoires illimité
         //avec un nombre de fichiers choisi
-        if (nbFolders == 0 && !oneFolder)
+        if (nbFolders == 0 && nbFilePerFolder > 0)
             {
             nbFolders = nbFiles/nbFilePerFolder;
             
@@ -139,16 +132,11 @@ public class VaCreator implements Runnable
                 }
             }
         
-        if (oneFolder)
-            {
-            nbFolders = 1;
-            }
-        
         //Calcul du nombre de fichiers à traiter
         //si l'utilisateur précise un nombre
         //de fichiers par répertoire ainsi
         //que le nombre de répertoires
-        if (nbFolders > 0 && nbFolders <= nbFiles && nbFilePerFolder > 0 && remainder == 0)
+        if (nbFolders > 0 && nbFolders <= nbFiles && nbFilePerFolder > 0)
             {
             int res = nbFolders * nbFilePerFolder;
             
@@ -156,6 +144,14 @@ public class VaCreator implements Runnable
                 {
                 nbFiles = res;
                 }
+            }
+        
+        //Cas où le nombre de répertoires est précisé
+        //mais pas le nombre de fichiers
+        //On crée 1 seul répertoire
+        if (oneFolder && nbFolders > 0)
+            {
+            nbFolders = 1;
             }
         
         if (nbFolders > nbFiles)
@@ -251,7 +247,6 @@ public class VaCreator implements Runnable
                 //Peuplement de la liste des fichiers à randomizer
                 //Chaque nouveau fichier randomizé ne doit pas
                 //figurer dans la black liste
-                
                 for (int i=0; i<nbFiles; i++)
                     {
                     int randomIndex = 0;
